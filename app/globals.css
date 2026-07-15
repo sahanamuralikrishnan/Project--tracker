@@ -1,26 +1,347 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+
+
+.hero {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  padding: 4rem;
+  text-align: center;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.hero h1 {
+  margin: 0;
+  font-size: 2.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.hero p {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.hero .buttons {
+  margin-top: 1rem;
+}
+
+.hero button {
+  padding: 10px 20px;
+  margin: 0 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Features Section */
+.features {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.feature-card {
+  flex: 1;
+  background: white;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.feature-card h3 {
+  margin-bottom: 0.5rem;
+}
+
+/* Call to Action */
+.cta {
+  background: #f5f5f5;
+  padding: 2rem;
+  text-align: center;
+}
+
+.cta button {
+  padding: 12px 24px;
+  background: #2575fc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Dashboard container */
+.dashboard {
+  padding: 2rem;
+  /* font-weight: bold; */
+}
+
+/* Stats section */
+.stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stat-box {
+  flex: 1;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-box h3 {
+  margin: 0;
+}
+
+.stat-box p {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/* Stat colors */
+.stat-box.green {
+  background: #4CAF50;
+}
+
+.stat-box.blue {
+  background: #2196F3;
+}
+
+.stat-box.purple {
+  background: #9C27B0;
+}
+
+.stat-box.orange {
+  background: #FF9800;
+}
+
+/* Add project form */
+.add-project {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.add-project input {
+  flex: 1;
+  padding: 8px;
+}
+
+.add-project button {
+  padding: 8px 12px;
+}
+
+/* Project list */
+.project-list {
+  padding: 0;
+  margin: 0;
+}
+
+.project-item {
+  list-style: none;
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* styles/globals.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* components/Sidebar.css */
+.sidebar {
+  width: 220px;
+  background: #f5f5f5;
+  height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.sidebar-title {
+  color: purple;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 0.5rem 0;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.sidebar-link:hover {
+  color: purple;
+}
+
+/* components/Sidebar.css */
+.sidebar {
+  width: 220px;
+  background: #f5f5f5;
+  height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.sidebar-title {
+  color: purple;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 0.5rem 0;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.sidebar-link:hover {
+  color: purple;
+}
+
+.layout-container {
+  display: flex;
+  min-height: 70vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #f4f4f4;
+  padding: 1rem;
+}
+
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  text-align: center;
+  /* centers wording/button horizontally */
+}
+
+.tracker-title {
+  color: #6a11cb;
+  margin-bottom: 0.5rem;
+}
+
+.tracker-tagline {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.cta-btn {
+  padding: 12px 24px;
+  background: #2575fc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cta-btn:hover {
+  background: #1a5edb;
+}
+
+.hero {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  padding: 4rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.hero p {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.hero .buttons {
+  margin-top: 1rem;
+}
+
+.cta-btn {
+  padding: 12px 24px;
+  background: #2575fc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cta-btn:hover {
+  background: #1a5edb;
+}
+
+.features {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.feature-card {
+  flex: 1;
+  background: white;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.cta {
+  background: #f5f5f5;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+.home h1 {
+  font-weight: bold;
+  /* makes it bold */
+  font-size: 2.5rem;
+  /* increases size (adjust as needed) */
+
+}
+
+.dashboard h1 {
+  font-weight: bold;
+  font-size: 2.5rem;
+
 }
