@@ -11,8 +11,8 @@
           onClick={() => setActiveTab("overview")}
           className={`pb-2 font-medium border-b-2 transition-colors duration-200 ${
             activeTab === "overview"
-              ? "border-blue-500 text-blue-600 font-semibold"
-              : "border-transparent text-gray-600 hover:text-blue-500 hover:border-blue-400"
+              ? "border-[#5f8d66] text-[#5f8d66] font-semibold"
+              : "border-transparent text-gray-600 hover:text-[#5f8d66] hover:border-[#a8c9ad]"
           }`}
         >
           Overview
@@ -22,8 +22,8 @@
             onClick={() => setActiveTab("tasks")}
             className={`pb-2 font-medium ${
               activeTab === "tasks"
-                ? "border-b-2 border-blue-500"
-                : "text-gray-600 hover:text-blue-500"
+                ? "border-b-2 border-[#5f8d66]"
+                : "text-gray-600 hover:text-[#5f8d66]"
             }`}
           >
             Tasks (6)
@@ -32,8 +32,8 @@
             onClick={() => setActiveTab("assistant")}
             className={`pb-2 font-medium ${
               activeTab === "assistant"
-                ? "border-b-2 border-blue-500"
-                : "text-gray-600 hover:text-blue-500"
+                ? "border-b-2 border-[#5f8d66]"
+                : "text-gray-600 hover:text-[#5f8d66]"
             }`}
           >
             AI Assistant
@@ -55,7 +55,7 @@
             <section className="bg-white shadow rounded-lg p-4 mb-6">
               <h2 className="text-xl font-semibold mb-3">Progress</h2>
               <div className="w-full bg-gray-200 rounded-full h-4 mb-2">
-                <div className="bg-blue-500 h-4 rounded-full w-[60%]"></div>
+                <div className="bg-[#a8c9ad] h-4 rounded-full w-[60%]"></div>
               </div>
               <p className="text-gray-700">6 / 10 tasks completed</p>
             </section>
@@ -65,7 +65,7 @@
               <h2 className="text-xl font-semibold mb-3">Activity</h2>
               <ul className="space-y-2 text-gray-700 list-none">
                 <li className="flex items-center space-x-2">
-                  <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+                  <span className="w-3 h-3 bg-[#5f8d66] rounded-full"></span>
                   <span>
                     Sahana updated status to <span className="font-medium">In Progress</span> 
                      (2h ago)
@@ -91,7 +91,7 @@
 
     {/* Progress Bar */}
     <div className="w-full bg-gray-200 rounded-full h-6 mb-6">
-      <div className="bg-blue-500 h-6 rounded-full w-[60%]"></div>
+      <div className="bg-[#a8c9ad] h-6 rounded-full w-[60%]"></div>
     </div>
     <p className="text-gray-700 mb-10 text-lg font-semibold">
       6 / 10 tasks completed
@@ -248,7 +248,7 @@
       />
 
       {/* Generate Button */}
-      <button className="px-6 py-2 bg-purple-600 text-white rounded-lg mb-10">
+      <button className="px-6 py-2 bg-[#5f8d66] text-white rounded-lg mb-10">
         Generate Tasks
       </button>
 
@@ -264,12 +264,12 @@
             </div>
             <div className="flex items-center space-x-6">
               <select
-                className="border rounded-lg p-2 text-sm font-semibold text-green-600"
+                className="border rounded-lg p-2 text-sm font-semibold text-[#5f8d66]"
                 defaultValue="Done"
               >
-                <option className="text-orange-600">Todo</option>
-                <option className="text-blue-600">In Progress</option>
-                <option className="text-green-600">Done</option>
+                <option className="text-[#5f8d66]">Todo</option>
+                <option className="text-[#5f8d66]">In Progress</option>
+                <option className="text-[#5f8d66]">Done</option>
               </select>
               <span className="text-sm text-gray-600">May 18, 2026</span>
             </div>
@@ -283,12 +283,12 @@
             </div>
             <div className="flex items-center space-x-6">
               <select
-                className="border rounded-lg p-2 text-sm font-semibold text-green-600"
+                className="border rounded-lg p-2 text-sm font-semibold text-[#5f8d66]"
                 defaultValue="Done"
               >
-                <option className="text-orange-600">Todo</option>
-                <option className="text-blue-600">In Progress</option>
-                <option className="text-green-600">Done</option>
+                <option className="text-[#5f8d66]">Todo</option>
+                <option className="text-[#5f8d66]">In Progress</option>
+                <option className="text-[#5f8d66]">Done</option>
               </select>
               <span className="text-sm text-gray-600">May 19, 2026</span>
             </div>
@@ -302,12 +302,12 @@
             </div>
             <div className="flex items-center space-x-6">
               <select
-                className="border rounded-lg p-2 text-sm font-semibold text-blue-600"
+                className="border rounded-lg p-2 text-sm font-semibold text-[#5f8d66]"
                 defaultValue="In Progress"
               >
-                <option className="text-orange-600">Todo</option>
-                <option className="text-blue-600">In Progress</option>
-                <option className="text-green-600">Done</option>
+                <option className="text-[#5f8d66]">Todo</option>
+                <option className="text-[#5f8d66]">In Progress</option>
+                <option className="text-[#5f8d66]">Done</option>
               </select>
               <span className="text-sm text-gray-600">May 21, 2025</span>
             </div>
@@ -321,12 +321,12 @@
             </div>
             <div className="flex items-center space-x-6">
               <select
-                className="border rounded-lg p-2 text-sm font-semibold text-orange-600"
+                className="border rounded-lg p-2 text-sm font-semibold text-[#5f8d66]"
                 defaultValue="Todo"
               >
-                <option className="text-orange-600">Todo</option>
-                <option className="text-blue-600">In Progress</option>
-                <option className="text-green-600">Done</option>
+                <option className="text-[#5f8d66]">Todo</option>
+                <option className="text-[#5f8d66]">In Progress</option>
+                <option className="text-[#5f8d66]">Done</option>
               </select>
               <span className="text-sm text-gray-600">May 23, 2026</span>
             </div>
@@ -340,12 +340,12 @@
             </div>
             <div className="flex items-center space-x-6">
               <select
-                className="border rounded-lg p-2 text-sm font-semibold text-orange-600"
+                className="border rounded-lg p-2 text-sm font-semibold text-[#5f8d66]"
                 defaultValue="Todo"
               >
-                <option className="text-orange-600">Todo</option>
-                <option className="text-blue-600">In Progress</option>
-                <option className="text-green-600">Done</option>
+                <option className="text-[#5f8d66]">Todo</option>
+                <option className="text-[#5f8d66]">In Progress</option>
+                <option className="text-[#5f8d66]">Done</option>
               </select>
               <span className="text-sm text-gray-600">May 25, 2025</span>
             </div>

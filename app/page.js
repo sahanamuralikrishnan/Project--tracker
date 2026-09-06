@@ -6,13 +6,13 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="home">
-      <h1>🎨 Sahana Portfolio Tracker</h1>
-      <p>Organize and track your projects easily.</p>
+      <h1>� Sahana Portfolio Tracker</h1>
+      <p>Organize and track your projects with ease.</p>
 
       {/* Hero Section */}
       <section className="hero">
-        <h1>Simplify Work And Get More Done</h1>
-        <p>Manage projects, collaborate, and stay organized with our platform.</p>
+        <h1>Simplify Your Work And Get More Done</h1>
+        <p>Plan, manage, and stay on top of your projects in one calm, focused space.</p>
       </section>
 
       {/* Features Section */}

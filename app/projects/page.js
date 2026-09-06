@@ -1,11 +1,56 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useProjects } from "../context/ProjectsContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeProjectStatus,
+  createProject,
+  deleteProject,
+  fetchProjects,
+} from "../store/projectsSlice";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function Projects() {
-  const { projects, addProject, removeProject, updateStatus } = useProjects();
+  const dispatch = useDispatch();
+  const { items: projects, loading, error } = useSelector(
+    (state) => state.projects
+  );
   const [newProject, setNewProject] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, [dispatch]);
+
+  const handleCreate = async (event) => {
+    event.preventDefault();
+    if (!newProject.trim()) return;
+
+    try {
+      await dispatch(createProject(newProject)).unwrap();
+      setNewProject("");
+      setMessage("Project created");
+    } catch (requestError) {
+      setMessage(requestError.message);
+    }
+  };
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      await dispatch(changeProjectStatus({ id, status })).unwrap();
+    } catch (requestError) {
+      setMessage(requestError.message);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await dispatch(deleteProject(id)).unwrap();
+      setMessage("Project deleted");
+    } catch (requestError) {
+      setMessage(requestError.message);
+    }
+  };
 
   const total = projects.length;
   const inProgress = projects.filter((p) => p.status === "In Progress").length;
@@ -13,19 +58,20 @@ export default function Projects() {
   const todo = projects.filter((p) => p.status === "Todo").length;
 
   return (
+    <ProtectedRoute>
     <div className="dashboard">
       <h1>📊 Project Dashboard</h1>
 
       {/* Stats */}
       <div className="stats">
         <StatBox label="Total Projects" value={total} color="green" />
-        <StatBox label="In Progress" value={inProgress} color="blue" />
-        <StatBox label="Completed" value={completed} color="purple" />
-        <StatBox label="Todo" value={todo} color="orange" />
+        <StatBox label="In Progress" value={inProgress} color="green" />
+        <StatBox label="Completed" value={completed} color="green" />
+        <StatBox label="Todo" value={todo} color="green" />
       </div>
 
       {/* Add Project */}
-      <div className="add-project">
+      <form className="add-project" onSubmit={handleCreate}>
         <input
           type="text"
           value={newProject}
@@ -33,28 +79,29 @@ export default function Projects() {
           onChange={(e) => setNewProject(e.target.value)}
           className="border rounded-lg px-3 py-2"
         />
-        <button onClick={() => { addProject(newProject); setNewProject(""); }}>
+        <button type="submit" disabled={loading}>
           Add Project
         </button>
-      </div>
+      </form>
+
+      {loading && <p>Loading projects...</p>}
+      {(error || message) && <p>{error || message}</p>}
 
       {/* Recent Projects */}
       <h2>Recent Projects</h2>
       <ul className="project-list">
-        {projects.map((p, i) => (
-          <li key={i} className="project-item">
+        {projects.map((p) => (
+          <li key={p._id} className="project-item">
             <div className="project-info">
-              {/* ✅ Clickable project name */}
               <Link href={`/projects/${p.name.toLowerCase().replace(/\s+/g, "-")}`}>
                 <strong>{p.name}</strong>
               </Link>
-              — {p.status} (updated {p.updated})
+              — {p.status} (updated {new Date(p.updatedAt).toLocaleDateString()})
             </div>
 
-            {/* ✅ Dropdown to update status */}
             <select
               value={p.status}
-              onChange={(e) => updateStatus(i, e.target.value)}
+              onChange={(e) => handleStatusChange(p._id, e.target.value)}
               style={{ marginLeft: "10px" }}
               className="border rounded-lg px-3 py-2"
             >
@@ -63,11 +110,14 @@ export default function Projects() {
               <option value="Done">Done</option>
             </select>
 
-            <button className="remove-btn" onClick={() => removeProject(i)}>❌ Remove</button>
+            <button className="remove-btn" onClick={() => handleDelete(p._id)}>
+              Remove
+            </button>
           </li>
         ))}
       </ul>
     </div>
+    </ProtectedRoute>
   );
 }
 

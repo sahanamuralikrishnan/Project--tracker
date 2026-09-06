@@ -1,16 +1,12 @@
-import React from 'react'
+import React from 'react';
 
-export default function footer() {
+export default function Footer() {
   return (
-    <div>
-      <footer style={{ padding: "1rem", background: "#f5f5f5", textAlign: "center" }}>
+    <footer className="site-footer">
       <p>© 2026 Sahana</p>
       <p>
-        Contact: <a href="mailto:sahana.muralikrishnan@gmail.com">
-          sahana.muralikrishnan@gmail.com
-        </a>
+        Contact: <a href="mailto:sahana.muralikrishnan@gmail.com">sahana.muralikrishnan@gmail.com</a>
       </p>
-      </footer>
-    </div>
+    </footer>
   );
-};
+}

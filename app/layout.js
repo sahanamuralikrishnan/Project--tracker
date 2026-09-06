@@ -2,7 +2,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
-import { ProjectsProvider } from "./context/ProjectsContext";
+import ReduxProvider from "./components/ReduxProvider";
 
 export const metadata = {
   title: "Project Tracker",
@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ProjectsProvider>
+        <ReduxProvider>
         <Header />
 
         {/* Sidebar + wording + main content */}
@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         </div>
 
         <Footer />
-        </ProjectsProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
