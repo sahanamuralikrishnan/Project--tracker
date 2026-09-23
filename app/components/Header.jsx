@@ -1,18 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUser, removeUser } from "../utils/storage";
 import { API_URL } from "../utils/api";
 
 export default function Header() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser(getUser());
-  }, []);
+  const [user, setUser] = useState(() =>
+    typeof window === "undefined" ? null : getUser()
+  );
 
   const handleLogout = async () => {
     try {
