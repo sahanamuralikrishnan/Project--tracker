@@ -38,13 +38,17 @@ app.get("/", (req, res) => {
 app.get("/api/debug", async (req, res) => {
   const readyState = mongoose.connection.readyState;
   const stateNames = ["disconnected", "connected", "connecting", "disconnecting"];
+  const maskedUri = (mongoUri || "").replace(/:[^:@]+@/, ":****@");
   try {
-    const User = require("./models/User");
-    const count = await User.countDocuments();
-    res.json({ readyState: stateNames[readyState], userCount: count });
+    const freshConnection = await mongoose.createConnection(mongoUri, {
+      serverSelectionTimeoutMS: 15000,
+    }).asPromise();
+    await freshConnection.close();
+    res.json({ readyState: stateNames[readyState], maskedUri, freshConnectResult: "SUCCESS" });
   } catch (err) {
     res.status(500).json({
       readyState: stateNames[readyState],
+      maskedUri,
       errorName: err.name,
       errorMessage: err.message,
     });
