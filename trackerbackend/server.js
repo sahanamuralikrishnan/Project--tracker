@@ -34,6 +34,22 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("Project Tracker backend is working");
 });
+
+app.get("/api/debug", async (req, res) => {
+  const readyState = mongoose.connection.readyState;
+  const stateNames = ["disconnected", "connected", "connecting", "disconnecting"];
+  try {
+    const User = require("./models/User");
+    const count = await User.countDocuments();
+    res.json({ readyState: stateNames[readyState], userCount: count });
+  } catch (err) {
+    res.status(500).json({
+      readyState: stateNames[readyState],
+      errorName: err.name,
+      errorMessage: err.message,
+    });
+  }
+});
 app.use("/api/tasks", taskRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
