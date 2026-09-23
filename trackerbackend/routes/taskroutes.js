@@ -1,5 +1,6 @@
 const express = require("express");
 const Task = require("../models/Task");
+const Project = require("../models/Project");
 const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 // Get all tasks for a given project
@@ -11,7 +12,12 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 
   try {
-      const tasks = await Task.find({ project: projectId }).sort({ createdAt: -1 });
+    const project = await Project.findOne({ _id: projectId, owner: req.user.id });
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const tasks = await Task.find({ project: projectId }).sort({ createdAt: -1 });
     res.status(200).json({ tasks });
   } catch (error) {
     console.error(error);
@@ -28,6 +34,11 @@ router.post("/", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: "projectId is required" });
   }
   try {
+    const project = await Project.findOne({ _id: projectId, owner: req.user.id });
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
      const task = await Task.create({
       title: title.trim(),
       project: projectId,
@@ -48,7 +59,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: "Invalid task status" });
   }
   try {
-    const task = await Task.findOne({ _id: req.params.id });
+    const task = await Task.findOne({ _id: req.params.id, owner: req.user.id });
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
@@ -65,7 +76,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 // Delete a task
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-      const task = await Task.findOneAndDelete({ _id: req.params.id });
+      const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user.id });
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }

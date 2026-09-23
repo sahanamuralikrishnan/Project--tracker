@@ -10,6 +10,7 @@ export default function ProjectDetailPage() {
   const [project, setProject] = useState(null);
   const [error, setError] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [tasksError, setTasksError] = useState("");
    const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskAssignee, setNewTaskAssignee] = useState("");
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
@@ -43,9 +44,14 @@ export default function ProjectDetailPage() {
         credentials: "include",
       });
       const data = await response.json();
-      if (response.ok) setTasks(data.tasks);
+      if (response.ok) {
+        setTasks(data.tasks);
+        setTasksError("");
+      } else {
+        setTasksError(data.message || "Could not load tasks");
+      }
     } catch (err) {
-      // ignore, tasks section will just stay empty
+      setTasksError("Server error while loading tasks. Please try again.");
     }
   };
 
@@ -208,7 +214,8 @@ export default function ProjectDetailPage() {
 
     {/* Task List */}
     <div className="space-y-10 text-gray-700">
-      {tasks.length === 0 && <p>No tasks yet. Add one above.</p>}
+      {tasksError && <p className="text-red-600">{tasksError}</p>}
+      {!tasksError && tasks.length === 0 && <p>No tasks yet. Add one above.</p>}
 
       {tasks.map((task) => (
         <div key={task._id} className="p-6 border rounded-lg shadow-sm">

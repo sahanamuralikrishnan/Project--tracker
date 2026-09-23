@@ -7,6 +7,13 @@ const router = express.Router();
 
 const jwtSecret = process.env.JWT_SECRET || process.env.secret_key || "myprojectsecret";
 
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 24 * 60 * 60 * 1000,
+};
+
 const createToken = (user) => {
   return jwt.sign(
     { id: user._id, email: user.email },
@@ -53,12 +60,7 @@ router.post("/login", async (req, res) => {
     const token = createToken(user);
     const { password: _, ...userData } = user.toObject();
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({ user: userData, message: "Login successful" });
   } catch (error) {
@@ -68,7 +70,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", cookieOptions);
   res.status(200).json({ message: "Logged out successfully" });
 });
 
