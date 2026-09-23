@@ -4,6 +4,9 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const taskRoutes = require("./routes/taskroutes");
+
+
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
@@ -19,14 +22,19 @@ process.env.PORT = String(port);
 process.env.JWT_SECRET = jwtSecret;
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Myntra backend is working");
+  res.send("Project Tracker backend is working");
 });
-
+app.use("/api/tasks", taskRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
 

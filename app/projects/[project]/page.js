@@ -1,9 +1,109 @@
- "use client";
-  import React, { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import ProtectedRoute from "../../components/ProtectedRoute";
+import { API_URL } from "../../utils/api";
 
-  export default function ProjectDetailPage() {
-    const [activeTab, setActiveTab] = useState("overview");
-     return (
+export default function ProjectDetailPage() {
+  const { project: projectId } = useParams();
+  const [activeTab, setActiveTab] = useState("overview");
+  const [project, setProject] = useState(null);
+  const [error, setError] = useState("");
+  const [tasks, setTasks] = useState([]);
+   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskAssignee, setNewTaskAssignee] = useState("");
+  const [newTaskDueDate, setNewTaskDueDate] = useState("");
+
+
+
+  useEffect(() => {
+    const loadProject = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/projects/${projectId}`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.message || "Could not load project");
+          return;
+        }
+
+        setProject(data.project);
+      } catch (err) {
+        setError("Server error. Please try again.");
+      }
+    };
+    if (projectId) loadProject();
+  }, [projectId]);
+
+  const loadTasks = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/tasks?projectId=${projectId}`, {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (response.ok) setTasks(data.tasks);
+    } catch (err) {
+      // ignore, tasks section will just stay empty
+    }
+  };
+
+  useEffect(() => {
+    if (projectId) loadTasks();
+  }, [projectId]);
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+
+    await fetch(`${API_URL}/api/tasks`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: newTaskTitle,
+        projectId,
+        assignee: newTaskAssignee,
+        dueDate: newTaskDueDate,
+      }),
+    });
+
+    setNewTaskTitle("");
+    setNewTaskAssignee("");
+    setNewTaskDueDate("");
+    loadTasks();
+  };
+
+
+  const handleTaskStatusChange = async (taskId, status) => {
+    await fetch(`${API_URL}/api/tasks/${taskId}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    loadTasks();
+  };
+
+  const handleTaskDelete = async (taskId) => {
+    await fetch(`${API_URL}/api/tasks/${taskId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    loadTasks();
+  };
+
+
+  if (error) {
+    return <div className="p-6">{error}</div>;
+  }
+
+  if (!project) {
+    return <div className="p-6">Loading...</div>;
+  }
+
+  return (
+    <ProtectedRoute>
     <div className="p-6">
       {/* Tabs */}
       <div className="flex space-x-6 border-b mb-6">
@@ -26,7 +126,7 @@
                 : "text-gray-600 hover:text-[#5f8d66]"
             }`}
           >
-            Tasks (6)
+            Tasks ({tasks.length})
           </button>
           <button
             onClick={() => setActiveTab("assistant")}
@@ -45,44 +145,13 @@
           <>
             <section className="bg-white shadow rounded-lg p-4 mb-6">
               <h2 className="text-xl font-semibold mb-3">Project Info</h2>
-              <p><span className="font-medium">Created On:</span> May 20, 2024</p>
-              <p><span className="font-medium">Last Updated:</span> May 22, 2024</p>
-              <p><span className="font-medium">Status:</span> In Progress</p>
-              <p><span className="font-medium">Description:</span> Building a full-stack e-commerce website with payment integration.</p>
-            </section>
-
-            {/* Progress */}
-            <section className="bg-white shadow rounded-lg p-4 mb-6">
-              <h2 className="text-xl font-semibold mb-3">Progress</h2>
-              <div className="w-full bg-gray-200 rounded-full h-4 mb-2">
-                <div className="bg-[#a8c9ad] h-4 rounded-full w-[60%]"></div>
-              </div>
-              <p className="text-gray-700">6 / 10 tasks completed</p>
-            </section>
-
-            {/* Activity */}
-            <section className="bg-white shadow rounded-lg p-4">
-              <h2 className="text-xl font-semibold mb-3">Activity</h2>
-              <ul className="space-y-2 text-gray-700 list-none">
-                <li className="flex items-center space-x-2">
-                  <span className="w-3 h-3 bg-[#5f8d66] rounded-full"></span>
-                  <span>
-                    Sahana updated status to <span className="font-medium">In Progress</span> 
-                     (2h ago)
-                  </span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                  <span>
-                    You created 2 new tasks
-                    (1d ago)
-                  </span>
-                </li>
-              </ul>
+              <p><span className="font-medium">Name:</span> {project.name}</p>
+              <p><span className="font-medium">Created On:</span> {new Date(project.createdAt).toLocaleDateString()}</p>
+              <p><span className="font-medium">Last Updated:</span> {new Date(project.updatedAt).toLocaleDateString()}</p>
+              <p><span className="font-medium">Status:</span> {project.status}</p>
             </section>
           </>
         )}
-
         {/* Tasks Content */}
 {activeTab === "tasks" && (
   <section className="w-full bg-white shadow rounded-lg p-10">
@@ -90,141 +159,92 @@
     <h2 className="text-3xl font-bold mb-10">Tasks</h2>
 
     {/* Progress Bar */}
-    <div className="w-full bg-gray-200 rounded-full h-6 mb-6">
-      <div className="bg-[#a8c9ad] h-6 rounded-full w-[60%]"></div>
-    </div>
-    <p className="text-gray-700 mb-10 text-lg font-semibold">
-      6 / 10 tasks completed
-    </p>
+    {(() => {
+      const doneCount = tasks.filter((t) => t.status === "Done").length;
+      const percent = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
+      return (
+        <>
+          <div className="w-full bg-gray-200 rounded-full h-6 mb-6">
+            <div
+              className="bg-[#a8c9ad] h-6 rounded-full"
+              style={{ width: `${percent}%` }}
+            ></div>
+          </div>
+          <p className="text-gray-700 mb-10 text-lg font-semibold">
+            {doneCount} / {tasks.length} tasks completed
+          </p>
+        </>
+      );
+    })()}
+        {/* Add Task */}
+    <form onSubmit={handleCreateTask} className="flex gap-4 mb-10">
+      <input
+        type="text"
+        value={newTaskTitle}
+        onChange={(e) => setNewTaskTitle(e.target.value)}
+        placeholder="Add a new task..."
+        className="flex-1 border rounded-lg px-5 py-3"
+      />
+      <input
+        type="text"
+        value={newTaskAssignee}
+        onChange={(e) => setNewTaskAssignee(e.target.value)}
+        placeholder="Assignee"
+        className="w-40 border rounded-lg px-5 py-3"
+      />
+      <input
+        type="date"
+        value={newTaskDueDate}
+        onChange={(e) => setNewTaskDueDate(e.target.value)}
+        className="w-48 border rounded-lg px-5 py-3"
+      />
+      <button
+        type="submit"
+        className="px-6 py-2 bg-[#5f8d66] text-white rounded-lg"
+      >
+        Add Task
+      </button>
+    </form>
 
     {/* Task List */}
     <div className="space-y-10 text-gray-700">
-      {/* Task Item */}
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" checked readOnly className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Research and planning</span>
-        </div>
-        <div className="mb-8">
-          <select
-            defaultValue="Done"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 18, 2024</p>
-      </div>
+      {tasks.length === 0 && <p>No tasks yet. Add one above.</p>}
 
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" checked readOnly className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Design homepage</span>
+      {tasks.map((task) => (
+        <div key={task._id} className="p-6 border rounded-lg shadow-sm">
+          <div className="flex items-center space-x-6 mb-8">
+            <input
+              type="checkbox"
+              checked={task.status === "Done"}
+              readOnly
+              className="w-7 h-7 rounded"
+            />
+            <span className="text-lg font-semibold">{task.title}</span>
+          </div>
+          <div className="mb-8 flex items-center gap-4">
+            <select
+              value={task.status}
+              onChange={(e) => handleTaskStatusChange(task._id, e.target.value)}
+              className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
+            >
+              <option value="Todo">Todo</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+            <button
+              onClick={() => handleTaskDelete(task._id)}
+              className="text-sm text-red-600 font-medium"
+            >
+              Remove
+            </button>
+          </div>
+          <p className="text-sm text-gray-600">
+            {task.assignee && <>Assigned to: {task.assignee} · </>}
+            {task.dueDate && <>Due: {new Date(task.dueDate).toLocaleDateString()} · </>}
+            Created: {new Date(task.createdAt).toLocaleDateString()}
+          </p>
         </div>
-        <div className="mb-8">
-          <select
-            defaultValue="Done"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 19, 2024</p>
-      </div>
-
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Setup database</span>
-        </div>
-        <div className="mb-8">
-          <select
-            defaultValue="In Progress"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 21, 2024</p>
-      </div>
-
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Develop product listing page</span>
-        </div>
-        <div className="mb-8">
-          <select
-            defaultValue="In Progress"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 23, 2024</p>
-      </div>
-
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Integrate payment gateway</span>
-        </div>
-        <div className="mb-8">
-          <select
-            defaultValue="Todo"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 25, 2024</p>
-      </div>
-
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Testing and bug fixes</span>
-        </div>
-        <div className="mb-8">
-          <select
-            defaultValue="Todo"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 28, 2024</p>
-      </div>
-
-      <div className="p-6 border rounded-lg shadow-sm">
-        <div className="flex items-center space-x-6 mb-8">
-          <input type="checkbox" className="w-7 h-7 rounded" />
-          <span className="text-lg font-semibold">Deployment</span>
-        </div>
-        <div className="mb-8">
-          <select
-            defaultValue="Todo"
-            className="border rounded-lg px-5 py-3 text-sm font-medium w-56"
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
-        <p className="text-sm text-gray-600">May 30, 2024</p>
-      </div>
+      ))}
     </div>
   </section>
 )}
@@ -355,5 +375,6 @@
     </section>
   )}
       </div>
-    );
-  }
+    </ProtectedRoute>
+  );
+}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUser, removeUser } from "../utils/storage";
+import { API_URL } from "../utils/api";
 
 export default function Header() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/api/users/logout", {
+      await fetch(`${API_URL}/api/users/logout`, {
         method: "POST",
         credentials: "include",
       });

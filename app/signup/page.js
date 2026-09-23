@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from "../utils/api";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/signup", {
+      const response = await fetch(`${API_URL}/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

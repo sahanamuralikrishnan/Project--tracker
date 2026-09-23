@@ -7,13 +7,28 @@ const router = express.Router();
 // Get the logged-in user's projects
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const projects = await Project.find({ owner: req.user.id }).sort({ createdAt: -1 });
+    const projects = await Project.find({}).sort({ createdAt: -1 });
     res.status(200).json({ projects });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Could not load projects" });
   }
 });
+// Get a single project belonging to the logged-in user
+router.get("/:id", authMiddleware, async (req, res) => {
+  try {
+    const project = await Project.findOne({ _id: req.params.id });
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.status(200).json({ project });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not load project" });
+  }
+});
+
 
 // Create a project for the logged-in user
 router.post("/", authMiddleware, async (req, res) => {
@@ -45,37 +60,26 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 
   try {
-    const project = await Project.findOne({
-      _id: req.params.id,
-      owner: req.user.id,
-    });
+    const project = await Project.findOne({ _id: req.params.id });
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
     project.status = status;
     await project.save();
-
     res.status(200).json({ project });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Could not update project" });
   }
 });
-
 // Delete a project
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const project = await Project.findOneAndDelete({
-      _id: req.params.id,
-      owner: req.user.id,
-    });
-
+    const project = await Project.findOneAndDelete({ _id: req.params.id });
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
     res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
     console.error(error);

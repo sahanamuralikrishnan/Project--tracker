@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { API_URL } from "../utils/api";
 
-const API_URL = "http://localhost:5000/api/projects";
+const PROJECTS_URL = `${API_URL}/api/projects`;
 
 const request = async (url, options = {}) => {
   const response = await fetch(url, {
@@ -22,14 +23,14 @@ const request = async (url, options = {}) => {
 };
 
 export const fetchProjects = createAsyncThunk("projects/fetch", async () => {
-  const data = await request(API_URL);
+  const data = await request(PROJECTS_URL);
   return data.projects;
 });
 
 export const createProject = createAsyncThunk(
   "projects/create",
   async (name) => {
-    const data = await request(API_URL, {
+    const data = await request(PROJECTS_URL, {
       method: "POST",
       body: JSON.stringify({ name }),
     });
@@ -40,7 +41,7 @@ export const createProject = createAsyncThunk(
 export const changeProjectStatus = createAsyncThunk(
   "projects/changeStatus",
   async ({ id, status }) => {
-    const data = await request(`${API_URL}/${id}`, {
+    const data = await request(`${PROJECTS_URL}/${id}`, {
       method: "PUT",
       body: JSON.stringify({ status }),
     });
@@ -51,7 +52,7 @@ export const changeProjectStatus = createAsyncThunk(
 export const deleteProject = createAsyncThunk(
   "projects/delete",
   async (id) => {
-    await request(`${API_URL}/${id}`, { method: "DELETE" });
+    await request(`${PROJECTS_URL}/${id}`, { method: "DELETE" });
     return id;
   }
 );
