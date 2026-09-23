@@ -54,10 +54,10 @@ export default function ProjectDetailPage() {
       setTasksError("Server error while loading tasks. Please try again.");
     }
   };
-
-  useEffect(() => {
-    if (projectId) loadTasks();
-  }, [projectId]);
+useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional fetch-on-param-change effect
+  if (projectId) loadTasks();
+}, [projectId]);
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
