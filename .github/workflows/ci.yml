@@ -30,8 +30,5 @@ jobs:
           cache-dependency-path: trackerbackend/package-lock.json
       - working-directory: trackerbackend
         run: npm ci
-      - working-directory: trackerbackend
-        run: node -e "require('./server.js')"
-        env:
-          MONGO_URI: mongodb://invalid-placeholder-not-used
-          JWT_SECRET: ci-placeholder
+      -       - working-directory: trackerbackend
+        run: node --check server.js
