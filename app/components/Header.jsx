@@ -11,7 +11,6 @@ export default function Header() {
   const [user, setUser] = useState(() =>
     typeof window === "undefined" ? null : getUser()
   );
-
   const handleLogout = async () => {
     try {
       await fetch(`${API_URL}/api/users/logout`, {
