@@ -4,20 +4,20 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Get the logged-in user's projects
+// Get all projects (shared team workspace)
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const projects = await Project.find({ owner: req.user.id }).sort({ createdAt: -1 });
+    const projects = await Project.find({}).sort({ createdAt: -1 });
     res.status(200).json({ projects });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Could not load projects" });
   }
 });
-// Get a single project belonging to the logged-in user
+// Get a single project (shared team workspace)
 router.get("/:id", authMiddleware, async (req, res) => {
   try {
-    const project = await Project.findOne({ _id: req.params.id, owner: req.user.id });
+    const project = await Project.findOne({ _id: req.params.id });
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -60,7 +60,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 
   try {
-    const project = await Project.findOne({ _id: req.params.id, owner: req.user.id });
+    const project = await Project.findOne({ _id: req.params.id });
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -76,7 +76,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 // Delete a project
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const project = await Project.findOneAndDelete({ _id: req.params.id, owner: req.user.id });
+    const project = await Project.findOneAndDelete({ _id: req.params.id });
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }

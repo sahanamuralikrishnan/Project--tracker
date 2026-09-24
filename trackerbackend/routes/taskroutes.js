@@ -12,7 +12,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 
   try {
-    const project = await Project.findOne({ _id: projectId, owner: req.user.id });
+    const project = await Project.findOne({ _id: projectId });
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -34,7 +34,7 @@ router.post("/", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: "projectId is required" });
   }
   try {
-    const project = await Project.findOne({ _id: projectId, owner: req.user.id });
+    const project = await Project.findOne({ _id: projectId });
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -59,7 +59,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: "Invalid task status" });
   }
   try {
-    const task = await Task.findOne({ _id: req.params.id, owner: req.user.id });
+    const task = await Task.findOne({ _id: req.params.id });
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
@@ -76,7 +76,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 // Delete a task
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-      const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user.id });
+      const task = await Task.findOneAndDelete({ _id: req.params.id });
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
