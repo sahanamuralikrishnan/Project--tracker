@@ -1,5 +1,6 @@
 export const saveUser = (user) => {
   localStorage.setItem("user", JSON.stringify(user));
+  window.dispatchEvent(new Event("user-changed"));
 };
 
 export const getUser = () => {
@@ -10,4 +11,5 @@ export const getUser = () => {
 
 export const removeUser = () => {
   localStorage.removeItem("user");
+  window.dispatchEvent(new Event("user-changed"));
 };

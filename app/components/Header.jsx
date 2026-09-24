@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUser, removeUser } from "../utils/storage";
 import { API_URL } from "../utils/api";
@@ -11,6 +11,13 @@ export default function Header() {
   const [user, setUser] = useState(() =>
     typeof window === "undefined" ? null : getUser()
   );
+
+  useEffect(() => {
+    const handleUserChange = () => setUser(getUser());
+    window.addEventListener("user-changed", handleUserChange);
+    return () => window.removeEventListener("user-changed", handleUserChange);
+  }, []);
+
   const handleLogout = async () => {
     try {
       await fetch(`${API_URL}/api/users/logout`, {
